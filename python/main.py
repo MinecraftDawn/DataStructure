@@ -1,7 +1,7 @@
 from python.heap import *
 import random
 
-heap = MinHeap()
+heap = MaxHeap()
 
 for _ in range(10):
     heap.push(random.randrange(-100,100))

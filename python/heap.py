@@ -1,57 +1,60 @@
-class MinHeap:
+class MaxHeap:
     def __init__(self):
-        self.heap = [float("-inf")]
+        self.heap = []
 
-    def isEmpty(self) -> bool:
-        return len(self.heap) <= 2
-
-    def isLeaf(self, index: int) -> bool:
-        return index >= len(self.heap) // 2 and index < len(self.heap)
+    def isEmpty(self):
+        return not bool(self.heap)
 
     def getLeftIndex(self, index: int) -> int:
-        return index << 1
+        return index * 2 + 1
 
     def getRightIndex(self, index: int) -> int:
-        return (index << 1) + 1
+        return index * 2 + 2
 
     def getParentIndex(self, index: int) -> int:
-        return index >> 1
+        return (index - 1) // 2
 
     def swapValue(self, index1: int, index2: int) -> None:
         self.heap[index1], self.heap[index2] = self.heap[index2], self.heap[index1]
 
+    def isLeaf(self, index: int) -> bool:
+        return self.getLeftIndex(index) >= len(self.heap) > index >= 0
+
+    def hasRight(self, index: int) -> bool:
+        return 0 < self.getRightIndex(index) < len(self.heap)
+
     def heapify(self, index: int) -> None:
         if not self.isLeaf(index):
-            if self.heap[index] > self.heap[self.getLeftIndex(index)] or \
-                    self.heap[index] > self.heap[self.getRightIndex(index)]:
+            if self.hasRight(index):
+                if self.heap[index] < self.heap[self.getLeftIndex(index)] or self.heap[index] < self.heap[
+                    self.getRightIndex(index)]:
+                    left = self.getLeftIndex(index)
+                    right = self.getRightIndex(index)
 
-                left = self.getLeftIndex(index)
-                right = self.getRightIndex(index)
-
-                if self.heap[left] < self.heap[right]:
+                    if self.heap[left] > self.heap[right]:
+                        self.swapValue(index, left)
+                        self.heapify(left)
+                    else:
+                        self.swapValue(index, right)
+                        self.heapify(right)
+            else:
+                if self.heap[index] < self.heap[self.getLeftIndex(index)]:
+                    left = self.getLeftIndex(index)
                     self.swapValue(index, left)
                     self.heapify(left)
-                else:
-                    self.swapValue(index, right)
-                    self.heapify(right)
 
-    def push(self, item: object) -> None:
-        self.heap.append(item)
+    def push(self, value: int) -> None:
+        self.heap.append(value)
         index = len(self.heap) - 1
 
-        while self.heap[index] < self.heap[self.getParentIndex(index)]:
-            parent = self.getParentIndex(index)
-            self.swapValue(index, parent)
-            index = parent
+        while self.getParentIndex(index) >= 0 and self.heap[index] > self.heap[self.getParentIndex(index)]:
+            self.swapValue(index, self.getParentIndex(index))
+            index = self.getParentIndex(index)
 
-    def pop(self) -> object:
-        if self.isEmpty():
-            raise Exception("Heap is empty!")
-
-        pop = self.heap[1]
-        self.heap[1] = self.heap.pop()
-        self.heapify(1)
+    def pop(self):
+        if len(self.heap) == 1:
+            return self.heap.pop()
+        pop = self.heap[0]
+        self.heap[0] = self.heap.pop()
+        self.heapify(0)
         return pop
-
-    def showAll(self) -> None:
-        print(self.heap[1:])
