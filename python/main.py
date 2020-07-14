@@ -1,10 +1,3 @@
-from python.heap import *
-import random
+from python.permutation import perm,permYield
 
-heap = MaxHeap()
-
-for _ in range(10):
-    heap.push(random.randrange(-100,100))
-
-while not heap.isEmpty():
-    print(heap.pop())
+print(list(permYield([1,2,3])))
