@@ -1,3 +1,2 @@
-from python.permutation import perm,permYield
-
-print(list(permYield([1,2,3])))
+from python.fibonacci import fib_iter
+print(fib_iter(10000))
