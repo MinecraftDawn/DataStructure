@@ -1,2 +1,2 @@
-from python.fibonacci import fib_iter
-print(fib_iter(10000))
+from python.KMeans import KMeans_input
+print(KMeans_input(3))
