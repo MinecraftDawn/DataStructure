@@ -1,2 +1,6 @@
-from python.KMeans import KMeans_input
-print(KMeans_input(3))
+from python.Stack import Stack
+s = Stack()
+for i in range(5):
+    s.push(i)
+while len(s):
+    print(s.pop())
