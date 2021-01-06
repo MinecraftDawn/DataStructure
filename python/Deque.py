@@ -18,7 +18,7 @@ class Deque:
     def __len__(self):
         return self.size
 
-    def push(self, val):
+    def pushtail(self, val):
         node = Node(val)
         node.pre = self.tail.pre
         node.next = self.tail
@@ -26,7 +26,7 @@ class Deque:
         self.tail.pre = node
         self.size += 1
 
-    def pop(self):
+    def poptail(self):
         node = self.tail.pre
         node.pre.next = self.tail
         self.tail.pre = node.pre
@@ -47,3 +47,9 @@ class Deque:
         self.head.next = node.next
         self.size -= 1
         return node.val
+
+    def peekhead(self):
+        return self.head.next.val
+
+    def peektail(self):
+        return self.tail.pre.val
