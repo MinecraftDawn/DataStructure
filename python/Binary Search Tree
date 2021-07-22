@@ -1,0 +1,159 @@
+class Node:
+     def __init__(self, val):
+          self.val = val
+          self.left = None
+          self.right = None
+
+class BST:
+     def __init__(self):
+          self.root = Node(float('-inf'))
+
+     # 取得分支度 (用於刪除)
+     def getDegree(self, node):
+          degree = 0
+          if node.left:
+               degree += 1
+          if node.right:
+               degree += 1
+          return degree
+
+     # 判斷是否存在的呼叫起點
+     def isExist(self, val):
+          if self.root.right:
+               return self.isExist_r(self.root.right, val)
+          else:
+               return False
+
+     # 判斷是否存在，使用遞迴呼叫
+     def isExist_r(self, node, val):
+          # 資料比當前node大，往右走
+          if node.val < val:
+               # 有右邊，繼續找
+               if node.right:
+                    return self.isExist_r(node.right, val)
+               # 沒右邊，找不到
+               else:
+                    return False
+          # 資料比當前node小，往左走
+          elif node.val > val:
+               # 有左邊，繼續找
+               if node.left:
+                    return self.isExist_r(node.left, val)
+               # 沒左邊，找不到
+               else:
+                    return False
+          # 找到了
+          else:
+               return True
+
+     # 插入資料的起點
+     def insert(self, val):
+          self.insert_r(self.root, val)
+
+     # 插入資料的起點，使用遞迴呼叫
+     def insert_r(self, node, val):
+          # 資料比當前node大，往右走
+          if node.val < val:
+               # 有右邊，繼續找
+               if node.right:
+                    self.insert_r(node.right, val)
+               # 沒右邊，插入
+               else:
+                    node.right = Node(val)
+          # 資料比當前node小或等於，往左走
+          else:
+               # 有左邊，繼續找
+               if node.left:
+                    self.insert_r(node.left, val)
+               # 沒左邊，插入
+               else:
+                    node.left = Node(val)
+
+     # 刪除資料的起點，使用遞迴呼叫
+     def delete(self, val):
+          if self.root.right:
+               self.delete_r(self.root.right, self.root, val)
+
+     def delete_r(self, node, parent, val):
+          # 資料比當前node大，往右走
+          if node.val < val:
+               # 有右邊，繼續找
+               if node.right:
+                    self.delete_r(node.right, node, val)
+          # 資料比當前node小或等於，往左走
+          elif node.val > val:
+               # 有左邊，繼續找
+               if node.left:
+                    self.delete_r(node.left, node, val)
+          # 找到資料了，進行刪除
+          else:
+               # 取得Degree
+               degree = self.getDegree(node)
+               # Degree等於0，直接刪掉
+               if degree == 0:
+                    # 假如node是從parent左邊來的，刪掉parent左邊
+                    if parent.left == node:
+                         parent.left = None
+                    # 假如node是從parent右邊來的，刪掉parent右邊
+                    else:
+                         parent.right = None
+               # Degree等於1，把爺爺和孫子連起來，祖孫情
+               elif degree == 1:
+                    # 假如node是從parent左邊來的
+                    if parent.left == node:
+                         # 假如node是左邊有東西，右邊None
+                         if node.left:
+                              parent.left = node.left
+                         # 假如node是右邊有東西，左邊None
+                         else:
+                              parent.left = node.right
+                    # 假如node是從parent右邊來的
+                    else:
+                         # 假如node是左邊有東西，右邊None
+                         if node.left:
+                              parent.right = node.left
+                         # 假如node是右邊有東西，左邊None
+                         else:
+                              parent.right = node.right
+               # Degree等於2，把左邊子樹最大的拿來取代
+               else:
+                    replace = node.left
+                    if replace.right:
+                         tmp = node.left
+                         replace = node.left.right
+                         while replace.right:
+                              tmp = tmp.right
+                              replace = replace.right
+                         # 斷開連結
+                         tmp.right = None
+                         # 把replace當作新的node，來連接
+                         replace.right = node.right
+                         replace.left = node.left
+                         # 把爸爸連接到replace
+                         if parent.right == node:
+                              parent.right = replace
+                         else:
+                              parent.left = replace
+                    else:
+                         # 找到的節點右邊，連接到parent的右邊
+                         replace.right = node.right
+                         # 把爸爸跟找到的結點連結
+                         if parent.right == node:
+                              parent.right = replace
+                         else:
+                              parent.left = replace
+                         
+
+     def inorder(self):
+          if self.root.right:
+               self.inorder_r(self.root.right)
+
+     # L P R
+     def inorder_r(self, node):
+          if node.left:
+               self.inorder_r(node.left)
+
+          print(node.val, end=' ')
+
+          if node.right:
+               self.inorder_r(node.right)
